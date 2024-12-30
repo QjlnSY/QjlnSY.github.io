@@ -1,0 +1,263 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Qjln提示您</title>
+<link rel="icon" href="./2025.ico">
+</head>
+<body>
+  <div class="middle">
+    <img src="./你好，2025.png" alt="Qjln-2025新年倒计时" style="max-width: 100%; height: 300px;">
+    <!-- 修改h1标签的类以确保可见性 -->
+    <h1 class="visible-label">新年倒计时</h1>
+    <div class="time">
+        <span>
+        <div id="d">
+            00
+        </div>
+        天 </span> <span>
+        <div id="h">
+            00
+        </div>
+        小时 </span> <span>
+        <div id="m">
+            00
+        </div>
+        分钟 </span> <span>
+        <div id="s">
+            00
+        </div>
+        秒 </span>
+    </div>
+</div>
+<script>
+const zuozhe = `
+ ██████╗      ██╗██╗     ███╗   ██╗
+██╔═══██╗     ██║██║     ████╗  ██║
+██║   ██║     ██║██║     ██╔██╗ ██║
+██║▄▄ ██║██   ██║██║     ██║╚██╗██║
+╚██████╔╝╚█████╔╝███████╗██║ ╚████║
+ ╚══▀▀═╝  ╚════╝ ╚══════╝╚═╝  ╚═══╝
+`
+console.log("作者：\r\n" + zuozhe)
+
+
+class Snowflake {
+  constructor() {
+    this.x = 0;
+    this.y = 0;
+    this.vx = 0;
+    this.vy = 0;
+    this.radius = 0;
+    this.alpha = 0;
+ 
+    this.reset();
+  }
+ 
+  reset() {
+    this.x = this.randBetween(0, window.innerWidth);
+    this.y = this.randBetween(0, -window.innerHeight);
+    this.vx = this.randBetween(-3, 3);
+    this.vy = this.randBetween(2, 5);
+    this.radius = this.randBetween(1, 4);
+    this.alpha = this.randBetween(0.1, 0.9);
+  }
+ 
+  randBetween(min, max) {
+    return min + Math.random() * (max - min);
+  }
+ 
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+ 
+    if (this.y + this.radius > window.innerHeight) {
+      this.reset();
+    }
+  }
+}
+ 
+class Snow {
+  constructor() {
+    this.canvas = document.createElement("canvas");
+    this.ctx = this.canvas.getContext("2d");
+ 
+    document.body.appendChild(this.canvas);
+ 
+    window.addEventListener("resize", () => this.onResize());
+    this.onResize();
+    this.updateBound = this.update.bind(this);
+    requestAnimationFrame(this.updateBound);
+ 
+    this.createSnowflakes();
+  }
+ 
+  onResize() {
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+    this.canvas.width = this.width;
+    this.canvas.height = this.height;
+  }
+ 
+  createSnowflakes() {
+    const flakes = window.innerWidth / 4;
+ 
+    this.snowflakes = [];
+ 
+    for (let s = 0; s < flakes; s++) {
+      this.snowflakes.push(new Snowflake());
+    }
+  }
+ 
+  update() {
+    this.ctx.clearRect(0, 0, this.width, this.height);
+ 
+    for (let flake of this.snowflakes) {
+      flake.update();
+ 
+      this.ctx.save();
+      this.ctx.fillStyle = "#FFF";
+      this.ctx.beginPath();
+      this.ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+      this.ctx.closePath();
+      this.ctx.globalAlpha = flake.alpha;
+      this.ctx.fill();
+      this.ctx.restore();
+    }
+    requestAnimationFrame(this.updateBound);
+  }
+}
+new Snow();
+
+const comingdate = new Date("Jan 29, 2025 00:00:00");
+const d = document.getElementById("d");
+const h = document.getElementById("h");
+const m = document.getElementById("m");
+const s = document.getElementById("s");
+
+const countdown = setInterval(() => {
+  const now = new Date();
+  const des = comingdate.getTime() - now.getTime();
+  const days = Math.floor(des / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((des % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const mins = Math.floor((des % (1000 * 60 * 60)) / (1000 * 60));
+  const secs = Math.floor((des % (1000 * 60)) / 1000);
+
+  d.innerHTML = getTrueNumber(days);
+  h.innerHTML = getTrueNumber(hours);
+  m.innerHTML = getTrueNumber(mins);
+  s.innerHTML = getTrueNumber(secs);
+
+  // 更新文档的标题
+  document.title = `距新年${getTrueNumber(days)}天${getTrueNumber(hours)}小时${getTrueNumber(mins)}分钟${getTrueNumber(secs)}秒`;
+
+  if (des <= 0) clearInterval(countdown);
+}, 1000);
+
+const getTrueNumber = x => (x < 10 ? "0" + x : x);
+</script>
+</body>
+<style>
+  :root {
+    font-family: '123', sans-serif;
+    font-weight: 400;
+  }
+   
+  html,
+  body {
+    font-size: 100%;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    background: rgb(119, 13, 13);
+    background: radial-gradient(
+      circle,
+      rgba(119, 13, 13, 0.92) 64%,
+      rgba(0, 0, 0, 0.6) 100%
+    );
+    overflow:hidden;
+  }
+  a{
+      text-decoration:none;
+      color:#d99c3b;
+  }
+  canvas {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1; /* 确保画布在背景 */
+  }
+   
+  @keyframes moveBg {
+    0% {
+      background-position: 0% 30%;
+    }
+    100% {
+      background-position: 1000% 500%;
+    }
+  }
+   
+  .middle {
+    margin: 0 auto;
+    transform: translate(0, 0);
+    text-align: center;
+    user-select: none;
+    font-size: 3rem;
+    position: relative;
+    top: 20%;
+    bottom: 20%;
+    z-index: 2; /* 确保文本在最前面 */
+  }
+  
+  
+  .visible-label {
+    color: #d99c3b; /* 设置一个明显的颜色 */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 可选：添加文字阴影以增强可读性 */
+    font-family: '楷体';
+  }
+  
+  @keyframes moveBg {
+    0% {
+      background-position: 0% 30%;
+    }
+    100% {
+      background-position: 1000% 500%;
+    }
+  }
+   
+  .time {
+    color: #d99c3b;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+  }
+  .time div{
+    font-size: 6rem;
+  }
+  span{
+    color: #d99c3b;
+    font-family: '楷体';
+  }
+
+  .time span {
+    padding: 0 14px;
+    font-size: 3rem;
+  }
+   
+  @media only screen and (max-width: 768px) {
+  .middle {
+    font-size: 1.1rem;
+  }
+  .time div{
+    font-size: 4rem;
+  }
+  .time span {
+  padding: 0 16px;
+  font-size: 2rem;
+  }
+  }
+  </style>
+</html>
